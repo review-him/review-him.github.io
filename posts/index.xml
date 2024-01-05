@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Review Him Blog</title>
+    <link>https://review-him.github.io/posts/</link>
+    <description>Recent content in Posts on Review Him Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 05 Jan 2024 22:00:33 +0700</lastBuildDate><atom:link href="https://review-him.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>First Post</title>
+      <link>https://review-him.github.io/posts/post_1/</link>
+      <pubDate>Fri, 05 Jan 2024 22:00:33 +0700</pubDate>
+      
+      <guid>https://review-him.github.io/posts/post_1/</guid>
+      <description>My first post on the website with&amp;hellip; Hugo some content for the test
+def func(x): return x ** 2 </description>
+    </item>
+    
+  </channel>
+</rss>
