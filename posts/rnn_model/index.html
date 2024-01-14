@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+<link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
+
+
+<title>Review Him Blog | RNN architecture</title>
+</head>
+<body>
+		 <div class="max-w-{1400px}">
+
+<div class="py-6 pl-4 lg:pl-8 mb-5">
+<a href="/" class="text-5xl block mb-6">Review Him Blog </a>
+<span class="text-xl">  </span>
+</div>
+
+<nav class="flex flex-row gap-8 pl-4 lg:pl-8">
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/"> Home</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/posts/"> Blog</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/about/"> About</a>
+                        
+                </div>
+                
+        
+</nav>
+<hr><div class="grid grid-cols-12 gap-8 mx-4 lg:mx-8 mt-10">
+			<div class="col-span-12 lg:col-span-8">
+
+
+<h1 class="text-2xl font-bold mb-2">RNN architecture</h1>
+
+
+<div class="flex flex-row gap-2 mb-2">
+
+<div>
+	<datetime class="text-zinc-500">2024-01-14</datetime></div>
+
+
+</div>
+
+<div class="single">
+
+<h1 id="где-rnn-используются">Где RNN используются</h1>
+<p>Технология рекуррентных нейронных сетей используется как основа в state of the art решениях в области языкового моделирования и генерации текста, распознавания речи, генерации описания изображений или видео тагинга.</p>
+<p>Такой тип архитектуры нейронных сетей используется преимущественно в задачах определения паттернов в последовательности данных.
+С помощью RNN можно обрабатывать такие данные как рукописный текст, геномы, текстовые или числовые временные серии (например котировки акций или показания датчиков). А также на вход такой модели можно подавать и части изображения для решения каких либо специфичных задач, как например описание изображения.</p>
+<h1 id="основной-принцип-работы-rnn">Основной принцип работы RNN</h1>
+<h2 id="общее-описание-принципа">Общее описание принципа</h2>
+<p>Основной принцип работы RNN, в отличии от обычной архитектуры нейронной сети - Feedforward (многослойный персептрон), в том, как данные проходят по нейронной сети. В Feedforward нейронной сети данные проходят по ней без цикла, а RNN прогоняет информацию через себя несколько раз. Это позволяет расширить функциональность обычной нейросети и добавить к имеющейся информации на вход информацию о предыдущих проходах. Чтобы было понятно, входные данные об Xt будут также принимать во внимания информацию из входных данных об X0:t-1
+Различия между сетями будут выглядеть следующим образом:
+<img src="/images/rnn_model_05.png" alt="Схема RNN">
+Количество скрытых слоев здесь может быть больше одного, так выглядит упрощение</p>
+<h2 id="архитектура-модели">Архитектура модели</h2>
+<p>Первым делом мы должны инициализировать все необходимые матрицы для преобразования информации через них. А для этого инициализировать размерность входной информации и размерность скрытого слоя:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">n <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span> <span style="color:#75715e"># number of samples</span>
+d <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span> <span style="color:#75715e"># number of features</span>
+h <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span> <span style="color:#75715e"># number of hidden units</span>
+
+X <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>rand((n, d)) <span style="color:#75715e"># input data</span>
+Wxh <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>rand((d, h)) <span style="color:#75715e"># input to hidden matrix</span>
+Whh <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>rand((h, h)) <span style="color:#75715e"># hidden state to hidden state matrix</span>
+bh <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>rand((<span style="color:#ae81ff">1</span>, h)) <span style="color:#75715e"># bias</span>
+</code></pre></div><p>Далее нам нужно получить матрицу скрытого слоя. Но для начала нам нужно инициализировать начальную матрицу скрытого слоя, чтобы осуществить эту операцию для X[0]:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">H_prev <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>zeros((<span style="color:#ae81ff">1</span>, h))
+</code></pre></div><p>Теперь считаем матрицу Ht по следующей формуле:
+Ht = φh * (Xt*Wxh + Ht−1*Whh + bh)
+где:
+φh - функция активации, обычно сигмоида или гиперболический тангенс, которая используется в обучении в алгоритме обратного распространения ошибки (backpropagation)</p>
+<h2 id="наглядное-описание-прохождения-информации-через-rnn">Наглядное описание прохождения информации через RNN</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_ht</span>(X, Wxh, Whh, H_prev, bh):
+    <span style="color:#75715e"># X (1, d)</span>
+    <span style="color:#75715e"># Wxh (d, h)</span>
+    <span style="color:#75715e"># Whh (h, h)</span>
+    <span style="color:#75715e"># H_prev (1, h)</span>
+    <span style="color:#75715e"># bh (1, h)</span>
+    a <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>matmul(X, Wxh) <span style="color:#75715e"># (1, d) X (d, h) = (1, h)</span>
+    b <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>matmul(H_prev, Whh) <span style="color:#75715e"># (1, h) X (h, h) = (1, h)</span>
+    c <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b <span style="color:#f92672">+</span> bh <span style="color:#75715e"># (1, h)</span>
+    <span style="color:#66d9ef">return</span> c
+Ht <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>relu(get_ht(X[<span style="color:#ae81ff">0</span>], Wxh, Whh, H_prev, bh)) <span style="color:#75715e"># torch.Size([1, 7]), H0</span>
+</code></pre></div><p>Полученное Ht это посчитанное скрытое представление для первого экземпляра (<code>X[0]</code>)</p>
+<p>И поскольку Ht это накопительное скрытое состояние, то для остальных <code>Xt+1</code> и далее мы поочередно пробрасываем посчитанное на предыдущем шаге Ht (Из этой же переменной):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">Ht <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>relu(get_ht(X[<span style="color:#ae81ff">1</span>], Wxh, Whh, Ht, bh)) <span style="color:#75715e"># H1</span>
+Ht <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>relu(get_ht(X[<span style="color:#ae81ff">2</span>], Wxh, Whh, Ht, bh)) <span style="color:#75715e"># H2</span>
+</code></pre></div><p>В моих экспериментальных данных Ht для <code>X[2]</code> получилось равно <code>tensor([[36.6122, 26.2831, 52.2418, 44.8039, 34.2843, 24.4749, 44.1318]])</code></p>
+<p>Теперь для проверки правильности подсчетов, воспользуемся уже созданным блоком RNN и модуля torch.nn, загрузим в него наши обученные веса и прогоним наши данные через него, чтобы убедиться в правильности подсчетов:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> torch.nn <span style="color:#66d9ef">as</span> nn
+<span style="color:#75715e"># Таким мобразом можно посмотреть название параметров модели, </span>
+<span style="color:#75715e"># чтобы дальше к ним можно было обращаться и менять их на наши. </span>
+<span style="color:#75715e"># Я этим воспользовался вне статьи:)</span>
+<span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> rnn<span style="color:#f92672">.</span>named_parameters():
+    print(k, v)
+
+<span style="color:#75715e"># Инициализируем пустую модель rnn из торча</span>
+rnn <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>RNN(d, <span style="color:#ae81ff">7</span>, nonlinearity<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;relu&#39;</span>)
+
+<span style="color:#75715e"># меняем рандомные параметры модели на наши</span>
+<span style="color:#75715e"># поскольку в формуле для умножения матрицы транспонируют, </span>
+<span style="color:#75715e"># тут мы загружаем наши веса именно транспонированные</span>
+<span style="color:#75715e"># посмотреть формулу можно здесь: https://pytorch.org/docs/stable/generated/torch.nn.RNN.html</span>
+rnn<span style="color:#f92672">.</span>weight_ih_l0 <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>Parameter(Wxh<span style="color:#f92672">.</span>T)
+rnn<span style="color:#f92672">.</span>weight_hh_l0 <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>Parameter(Whh<span style="color:#f92672">.</span>T)
+<span style="color:#75715e"># В формуле в rnn блоке из pytorch присутствует второй bias, </span>
+<span style="color:#75715e"># который не описан в оригинальной статье, поэтому присваеваем ему нули </span>
+rnn<span style="color:#f92672">.</span>bias_ih_l0 <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>Parameter(torch<span style="color:#f92672">.</span>zeros(rnn<span style="color:#f92672">.</span>bias_hh_l0<span style="color:#f92672">.</span>size()))
+rnn<span style="color:#f92672">.</span>bias_hh_l0 <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>Parameter(bh)
+
+<span style="color:#75715e"># прогоняем данные через rnn, используя наши X и H_prev, </span>
+<span style="color:#75715e"># и получаем output и hn</span>
+output, hn <span style="color:#f92672">=</span> rnn(X, H_prev)
+</code></pre></div><p>Проверяем что содержится в hn и убеждаемся, что результаты одинаковые:
+Ht = <code>tensor([[36.6122, 26.2831, 52.2418, 44.8039, 34.2843, 24.4749, 44.1318]])</code>
+hn = <code>tensor([[36.6122, 26.2831, 52.2418, 44.8039, 34.2843, 24.4749, 44.1318]],grad_fn=&lt;SqueezeBackward1&gt;)</code></p>
+<p>Затем, чтобы получить предсказания <code>Ot</code> для последнего экземпляра, нам нужно как и в нейронной сети Feedforward архитектуры домножить получившийся <code>Ht</code> на веса <code>Who</code>, добавить <code>bias</code> и применить функцию активации. Эта последняя часть не отличается от обычного персептрона.</p>
+<h1 id="как-обучать">Как обучать?</h1>
+<p>Обучение здесь осуществляется тем же методом обратного распространения ошибки, но так как очередность поданных элементов имеет значение, то и метод обучение здесь немного особенный. Он даже называется не просто Backpropagation, а Backpropagation through time (BPTT).</p>
+<h2 id="backpropagation-through-time-bptt">Backpropagation Through Time (BPTT)</h2>
+<p>Когда мы делает проход по нейронной сети для какой-то последовательности, на выходе мы получаем для каждого элемента в последовательности скрытое представление в виде вектора <code>Ht</code>, а также мы считаем на каждом шаге <code>Ot</code>, которое будет обозначать предсказания.
+Теперь мы можем использовать наши предсказания для составления нашей функции потерь.
+Обозначим функцию потерь как L(O, Y). Тогда значение этой функции потерь для какой-то последовательности будет равняться сумме результатов функций потерь по каждому элементу последовательности от предсказаний <code>Ot</code> и истинных значений <code>Yt</code></p>
+<p><img src="/images/rnn_model_01.png" alt="Формула функции потерь"></p>
+<p>В статье далее описываются математические вычисления градиента функции потерь по каждой матрице весов и все это упрощается до следующих формул:</p>
+<ol>
+<li><img src="/images/rnn_model_02.png" alt="Упрощение формул вычисления градиента"></li>
+<li><img src="/images/rnn_model_03.png" alt="Упрощение формул вычисления градиента"></li>
+<li><img src="/images/rnn_model_04.png" alt="Упрощение формул вычисления градиента"></li>
+</ol>
+<p>Из формул можно заметить, что нам следует сохранять матрицу $W_{hh}^k$ для подсчета функции потерь, но чем больше последовательность, тем больше будут значения этой матрицы, возведенные в степень $k$, поэтому на практике используется метод Truncated BPTT.</p>
+<p>Суть этого метода заключается в том, чтобы ограничить количество суммируемых элементов для достижения подходящего размера степени, чтобы облегчить вычисления. При таком подходе следует проходить окном определенного размера по входным данным, а все что не попадает в это окно не считать. С помощью такого подхода мы также ограничиваем количество скрытых слоев сети для обучения.</p>
+<h3 id="реализация-с-pytorch">Реализация с pytorch</h3>
+<p>На практике BPTT с помощью pytorch может быть реализовано следующим образом:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">output, hiddens <span style="color:#f92672">=</span> rnn_model(inputs)
+loss <span style="color:#f92672">=</span> loss_fn(output, targets)
+loss<span style="color:#f92672">.</span>backward()
+</code></pre></div><p>Потому что pytorch обо всем и сам прекрасно позаботится.</p>
+<h1 id="преимущества-rnn">Преимущества RNN</h1>
+<ul>
+<li>На вход можно подавать любую последовательность данных</li>
+<li>Модель учитывает зависимости в последовательности</li>
+<li>Может генерировать векторное представление чего-либо - генератор эмбедингов из последовательности</li>
+<li>Является базовой архитектурой к более продвинутым моделям</li>
+</ul>
+<h1 id="недостатки-rnn-и-их-решения">Недостатки RNN и их решения</h1>
+<h2 id="затухание-и-взрыв-градиента">Затухание и взрыв градиента</h2>
+<p>Тут нечего добавить. Нейросеть рекуррентная, а значит, когда значения весов меньше единицы, умножение значений друг на друга будут давать меньшие значения. Поэтому чем больше будет последовательность данных при обучении, тем сильнее будет затухание градиента.
+По аналогии с предыдущей проблемой, когда значения весов будут больше единицы, значения градиента при их перемножении будет сильно расти. И чем больше будет последовательность данных при обучении, тем сильнее будет взрыв градиента.</p>
+<p>Для решения этого недостатка была придумана более совершенная модель - LSTM.
+Также недостаток взрыва градиента может быть решен с помощью метода clip_grad_norm_() в модуле utils pytorch. Этот метод использует метод клиппинга градиента, где значения вектора градиента  нормируются модулем этого вектора и умножаются на максимальное значение.
+В коде это делается следующим образом:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">output, hiddens <span style="color:#f92672">=</span> rnn(inputs)
+loss <span style="color:#f92672">=</span> loss_fn(output, targets)
+
+loss<span style="color:#f92672">.</span>backward()
+nn<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>clip_grad_norm_(rnn<span style="color:#f92672">.</span>parameters(), <span style="color:#ae81ff">5</span>)  <span style="color:#75715e"># делаем ограничение максимальных значений градиентов, а затем optimizer step()</span>
+optimizer<span style="color:#f92672">.</span>step()
+</code></pre></div><h1 id="источники">Источники</h1>
+<blockquote>
+<p><a href="https://www.youtube.com/watch?v=AsNTP8Kwu80&amp;t=483s">Recurrent Neural Networks (RNNs), Clearly Explained!!!</a></p>
+<p><a href="https://neurohive.io/ru/osnovy-data-science/rekurrentnye-nejronnye-seti/">Рекуррентная нейронная сеть (RNN): виды, обучение и т.д.</a></p>
+<p><a href="https://arxiv.org/pdf/1912.05911.pdf">Оригинальная статья</a></p>
+<p><a href="https://www.kaggle.com/code/purvasingh/text-generation-via-rnn-and-lstms-pytorch">https://www.kaggle.com/code/purvasingh/text-generation-via-rnn-and-lstms-pytorch</a></p>
+</blockquote>
+
+
+</div>
+
+
+
+
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ 
+    tex2jax: {
+      inlineMath: [["$","$"],["\\(","\\)"]],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    }
+  })
+</script>
+
+
+			</div>
+
+			<aside class="lg:col-span-4 col-span-12">
+					<h3 class="text-lg mb-2 text-black font-medium "> Explore topics by </h3>
+					<ul class="text-cyan-900">
+						<li><a href="/categories/" class="hover:underline"> Categories </a></li>
+						<li><a href="/tags/" class="hover:underline"> Tags </a></li>
+					</ul>
+
+
+					
+					
+					<h3 class="text-lg mb-2 mt-3 text-black font-medium ">Featured Posts</h3>
+						<ul class="text-cyan-900">
+						
+					</ul>
+
+					
+
+					
+					
+
+					
+					
+					
+
+
+			</aside>
+
+</div>
+
+        
+
+		</div><div class="bg-slate-100 py-10 px-4 lg:px-8 mt-20">
+<p>Copyright (c) 2024 </p>
+</div></body>
+</html>
+
+
