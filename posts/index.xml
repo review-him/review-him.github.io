@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Review Him Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 14 Jan 2024 18:44:47 +0700</lastBuildDate><atom:link href="https://review-him.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 15 Jan 2024 22:58:45 +0700</lastBuildDate><atom:link href="https://review-him.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GRU - Gated Recurrent Unit</title>
+      <link>https://review-him.github.io/posts/gru_model/</link>
+      <pubDate>Mon, 15 Jan 2024 22:58:45 +0700</pubDate>
+      
+      <guid>https://review-him.github.io/posts/gru_model/</guid>
+      <description>Что такое GRU Расшифровка этой аббревиатуры выглядит так - The Gated Recurrent Unit. Это усовершенствованная архитектура нейронной сети, которая перекрывает некоторые недостатки таких архитектур, как RNN и LSTM. В отличие от RNN, эта архитектура может запоминать более далекие зависимости, а также в этой архитектуре в какой-то степени решена проблема затухания и взрыва градиента. А в отличие от LSTM, эта архитектура имеет меньшее количество параметров, что повышает скорость ее обучения, но не сильно ухудшает качество предсказаний модели.</description>
+    </item>
+    
     <item>
       <title>RNN architecture</title>
       <link>https://review-him.github.io/posts/rnn_model/</link>

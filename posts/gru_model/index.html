@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+<link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
+
+
+<title>Review Him Blog | GRU - Gated Recurrent Unit</title>
+</head>
+<body>
+		 <div class="max-w-{1400px}">
+
+<div class="py-6 pl-4 lg:pl-8 mb-5">
+<a href="/" class="text-5xl block mb-6">Review Him Blog </a>
+<span class="text-xl">  </span>
+</div>
+
+<nav class="flex flex-row gap-8 pl-4 lg:pl-8">
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/"> Home</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/posts/"> Blog</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/about/"> About</a>
+                        
+                </div>
+                
+        
+</nav>
+<hr><div class="grid grid-cols-12 gap-8 mx-4 lg:mx-8 mt-10">
+			<div class="col-span-12 lg:col-span-8">
+
+
+<h1 class="text-2xl font-bold mb-2">GRU - Gated Recurrent Unit</h1>
+
+
+<div class="flex flex-row gap-2 mb-2">
+
+<div>
+	<datetime class="text-zinc-500">2024-01-15</datetime></div>
+
+
+</div>
+
+<div class="single">
+
+<h1 id="что-такое-gru">Что такое GRU</h1>
+<p>Расшифровка этой аббревиатуры выглядит так - The Gated Recurrent Unit. Это усовершенствованная архитектура нейронной сети, которая перекрывает некоторые недостатки таких архитектур, как RNN и LSTM.
+В отличие от RNN, эта архитектура может запоминать более далекие зависимости, а также в этой архитектуре в какой-то степени решена проблема затухания и взрыва градиента.
+А в отличие от LSTM, эта архитектура имеет меньшее количество параметров, что повышает скорость ее обучения, но не сильно ухудшает качество предсказаний модели.</p>
+<p>GRU помнит о важной информации и контексте благодаря двум &ldquo;воротам&rdquo;, которые называются gates: <em>Reset gate</em> и <em>Update gate</em>.</p>
+<h1 id="описание-архитектуры-gru">Описание архитектуры GRU</h1>
+<p>Внутри одной GRU ячейки происходит следующее:</p>
+<h2 id="1-на-вход-подается-вектор-скрытого-представления-h_t-1-а-также-информация-о-текущей-записи-x_t">1. На вход подается вектор скрытого представления $H_{t-1}$, а также информация о текущей записи $X_t$.</h2>
+<p>В качестве первого вектора скрытого представления можно взять вектор состоящий из нолей</p>
+<h2 id="2-вычисляется-update-gate">2. Вычисляется Update gate</h2>
+<p>Update gate (Z) вычисляется по следующей формуле:</p>
+<p>$$
+Z_t = \sigma(X_tW_{xz} + H_{t-1}W_{hz} + b_z)
+$$</p>
+<blockquote>
+<p>В этой и следующих формулах символ $\sigma$ означает функцию sigmoid&rsquo;ы</p>
+</blockquote>
+<h2 id="3-вычисляется-reset-gate">3. Вычисляется Reset gate</h2>
+<p>Точно такая же формула как на предыдущем шаге, только взяты другие веса
+$$
+R_t = \sigma(X_tW_{xr} + H_{t-1}W_{hr} + b_r)
+$$</p>
+<h2 id="4-вычисляется-hath_t">4. Вычисляется $\hat{H_t}$</h2>
+<p>$\hat{H_t}$ помогает понять, какую информацию из предыдущего вектора скрытого представления нужно взять во внимание, в соответствии с входной информацией.</p>
+<p>Формула для вычисления $\hat{H_t}$ выглядит так:
+$$
+\hat{H_t} = tanh(X_tW_{xh} + (R_t \odot H_{t-1}) W_{hh} + b_h)
+$$</p>
+<blockquote>
+<p>В этой и следующих формулах символ $\odot$ означает поэлементное умножение элементов матриц одинаковой размерности. Иначе эту операцию называют <em>Hadamard product</em> или <em>elementwise product</em>.</p>
+</blockquote>
+<h2 id="5-вычисляется-h_t">5. Вычисляется $H_t$</h2>
+<p>И наконец вычисляется $H_t$:
+$$
+H_t = Zt \odot H_{t-1} + (1 - Z_t) \odot \hat{H_t}
+$$</p>
+<h1 id="как-реализовать-в-коде">Как реализовать в коде</h1>
+<h2 id="самостоятельно">Самостоятельно</h2>
+<p>Сначала обозначим матрицу входных данных, а также все необходимые параметры модели (для эксперимента генерируем их с помощью torch.randn()):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> torch
+
+h <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>  <span style="color:#75715e"># number of hidden units</span>
+d <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>  <span style="color:#75715e"># number of features in data</span>
+n <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>  <span style="color:#75715e"># number of records in sequence</span>
+
+X <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((n, d))
+H_prev <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>zeros(h)
+
+<span style="color:#75715e"># nn weights</span>
+Whr <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((h, h))
+Whz <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((h, h))
+Whh <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((h, h))
+
+Wxr <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((d, h))
+Wxz <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((d, h))
+Wxh <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((d, h))
+
+br <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>ones(h)
+bz <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>ones(h)
+bh <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>ones(h)
+</code></pre></div><p>Затем пройдем по алгоритму. Для эксперимента возьмем только первый элемент матрицы X.
+Выполним пункты 1, 2 и 3 в одной ячейке</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># reset gate</span>
+Rt <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>sigmoid(torch<span style="color:#f92672">.</span>matmul(X[<span style="color:#ae81ff">0</span>], Wxr) <span style="color:#f92672">+</span> torch<span style="color:#f92672">.</span>matmul(H_prev, Whr) <span style="color:#f92672">+</span> br)
+
+<span style="color:#75715e"># update gate</span>
+Zt <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>sigmoid(torch<span style="color:#f92672">.</span>matmul(X[<span style="color:#ae81ff">0</span>], Wxz) <span style="color:#f92672">+</span> torch<span style="color:#f92672">.</span>matmul(H_prev, Whz) <span style="color:#f92672">+</span> bz)
+</code></pre></div><p>Затем вычисляем $\hat{H_t}$:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">H_hat_t <span style="color:#f92672">=</span> (torch<span style="color:#f92672">.</span>tanh(torch<span style="color:#f92672">.</span>matmul(X[<span style="color:#ae81ff">0</span>], Wxh) 
+			  <span style="color:#f92672">+</span> torch<span style="color:#f92672">.</span>matmul((Rt <span style="color:#f92672">*</span> H_prev), Whh) 
+			  <span style="color:#f92672">+</span> bh))
+</code></pre></div><p>И после этого считаем скрытое представление первого слоя - $H_1$:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">H_1 <span style="color:#f92672">=</span> Zt <span style="color:#f92672">*</span> H_prev <span style="color:#f92672">+</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> Zt) <span style="color:#f92672">*</span> H_hat_t
+</code></pre></div><p>Реализуем ту же самую логику, только c помощью Pytorch</p>
+<h2 id="pytorch">Pytorch</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">gru <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>GRU(d, h)
+
+<span style="color:#75715e"># заменим веса сгенерированные по умолчанию на те, которые использовали мы</span>
+gru<span style="color:#f92672">.</span>weight_ih_l0<span style="color:#f92672">.</span>data[:<span style="color:#ae81ff">4</span>, :] <span style="color:#f92672">=</span> Wxr<span style="color:#f92672">.</span>T
+gru<span style="color:#f92672">.</span>weight_ih_l0<span style="color:#f92672">.</span>data[<span style="color:#ae81ff">4</span>:<span style="color:#ae81ff">8</span>, :] <span style="color:#f92672">=</span> Wxz<span style="color:#f92672">.</span>T
+gru<span style="color:#f92672">.</span>weight_ih_l0<span style="color:#f92672">.</span>data[<span style="color:#ae81ff">8</span>:<span style="color:#ae81ff">12</span>, :] <span style="color:#f92672">=</span> Wxh<span style="color:#f92672">.</span>T
+
+gru<span style="color:#f92672">.</span>weight_hh_l0<span style="color:#f92672">.</span>data[:<span style="color:#ae81ff">4</span>, :] <span style="color:#f92672">=</span> Whr<span style="color:#f92672">.</span>T
+gru<span style="color:#f92672">.</span>weight_hh_l0<span style="color:#f92672">.</span>data[<span style="color:#ae81ff">4</span>:<span style="color:#ae81ff">8</span>, :] <span style="color:#f92672">=</span> Whz<span style="color:#f92672">.</span>T
+gru<span style="color:#f92672">.</span>weight_hh_l0<span style="color:#f92672">.</span>data[<span style="color:#ae81ff">8</span>:<span style="color:#ae81ff">12</span>, :] <span style="color:#f92672">=</span> Whh<span style="color:#f92672">.</span>T
+
+gru<span style="color:#f92672">.</span>bias_ih_l0<span style="color:#f92672">.</span>data[:<span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> br
+gru<span style="color:#f92672">.</span>bias_ih_l0<span style="color:#f92672">.</span>data[<span style="color:#ae81ff">4</span>:<span style="color:#ae81ff">8</span>] <span style="color:#f92672">=</span> bz
+gru<span style="color:#f92672">.</span>bias_ih_l0<span style="color:#f92672">.</span>data[<span style="color:#ae81ff">8</span>:<span style="color:#ae81ff">12</span>] <span style="color:#f92672">=</span> bh
+
+<span style="color:#75715e"># И обнулим вектор, который мы не использовали в нашей формуле</span>
+<span style="color:#75715e"># подробнее можно почитать в документации:</span>
+<span style="color:#75715e"># https://pytorch.org/docs/stable/generated/torch.nn.GRU.html</span>
+gru<span style="color:#f92672">.</span>bias_hh_l0<span style="color:#f92672">.</span>data <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>zeros(gru<span style="color:#f92672">.</span>bias_hh_l0<span style="color:#f92672">.</span>data<span style="color:#f92672">.</span>size())
+</code></pre></div><p>Теперь передаем в модель наши входные данные и получаем одинаковые результаты:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">output, hidden <span style="color:#f92672">=</span> gru(X[<span style="color:#66d9ef">None</span>, <span style="color:#ae81ff">0</span>], H_prev[<span style="color:#66d9ef">None</span>, :])
+print(H_1, hidden)  
+<span style="color:#75715e"># tensor([-0.1318, -0.2864,  0.2564, -0.0395]), </span>
+<span style="color:#75715e"># tensor([[-0.1318, -0.2864,  0.2564, -0.0395]])</span>
+</code></pre></div><h1 id="как-обучать">Как обучать?</h1>
+<p>О том, как обучать подобную рекуррентную нейросеть (о способе BPTT) можно почитать в статье про <a href="/posts/rnn_model/">RNN</a></p>
+<h1 id="преимущества-и-недостатки">Преимущества и недостатки</h1>
+<h2 id="преимущества">Преимущества</h2>
+<p>В том, что модель определяет важность информации исходя из контекста и может помнить о ней от начала и до конца последовательности. Множество параметров сети способно находить зависимости и учитывать их при дальнейших вычислениях. А также такая модель частично решает проблемы с затуханием градиента, поскольку при обратном распространении ошибки, градиенты имеют несколько обходных путей до параметров.</p>
+<h2 id="недостатки">Недостатки</h2>
+<p>Говорят, что из-за большого количества обучаемых параметров в архитектуре сети, она, как и ее старший аналог LSTM, имеют склонность к переобучению, поэтому обучение нейросети необходимо делать с использованием дропаутов и нормализаций по батчам. А также следует контролировать переобучение, хорошо подобранной выборкой валидации.</p>
+<h1 id="источники">Источники</h1>
+<blockquote>
+<p><a href="https://www.youtube.com/watch?v=8HyCNIVRbSU">Illustrated Guide to LSTM&rsquo;s and GRU&rsquo;s: A step by step explanation</a></p>
+<p><a href="https://www.scaler.com/topics/deep-learning/gru-network/">Gated Recurrent Unit (GRU)</a></p>
+<p><a href="https://d2l.ai/chapter_recurrent-modern/gru.html">10.2. Gated Recurrent Units (GRU)</a></p>
+</blockquote>
+
+
+</div>
+
+
+
+
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ 
+    tex2jax: {
+      inlineMath: [["$","$"],["\\(","\\)"]],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    }
+  })
+</script>
+
+
+			</div>
+
+			<aside class="lg:col-span-4 col-span-12">
+					<h3 class="text-lg mb-2 text-black font-medium "> Explore topics by </h3>
+					<ul class="text-cyan-900">
+						<li><a href="/categories/" class="hover:underline"> Categories </a></li>
+						<li><a href="/tags/" class="hover:underline"> Tags </a></li>
+					</ul>
+
+
+					
+					
+					<h3 class="text-lg mb-2 mt-3 text-black font-medium ">Featured Posts</h3>
+						<ul class="text-cyan-900">
+						
+					</ul>
+
+					
+
+					
+					
+
+					
+					
+					
+
+
+			</aside>
+
+</div>
+
+        
+
+		</div><div class="bg-slate-100 py-10 px-4 lg:px-8 mt-20">
+<p>Copyright (c) 2024 </p>
+</div></body>
+</html>
+
+
