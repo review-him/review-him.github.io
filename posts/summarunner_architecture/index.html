@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+<link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
+
+
+<title>Review Him Blog | Summarunner architecture</title>
+</head>
+<body>
+		 <div class="max-w-{1400px}">
+
+<div class="py-6 pl-4 lg:pl-8 mb-5">
+<a href="/" class="text-5xl block mb-6">Review Him Blog </a>
+<span class="text-xl">  </span>
+</div>
+
+<nav class="flex flex-row gap-8 pl-4 lg:pl-8">
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/"> Home</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/posts/"> Blog</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/about/"> About</a>
+                        
+                </div>
+                
+        
+</nav>
+<hr><div class="grid grid-cols-12 gap-8 mx-4 lg:mx-8 mt-10">
+			<div class="col-span-12 lg:col-span-8">
+
+
+<h1 class="text-2xl font-bold mb-2">Summarunner architecture</h1>
+
+
+<div class="flex flex-row gap-2 mb-2">
+
+<div>
+	<datetime class="text-zinc-500">2024-01-28</datetime></div>
+
+
+</div>
+
+<div class="single">
+
+<h1 id="о-способах-решения-задачи-саммаризации">О способах решения задачи саммаризации</h1>
+<p>Для решения задачи саммаризации используются техники, основанные на двух подходах: extractive и abstractive</p>
+<h2 id="extractive-подходы">Extractive подходы</h2>
+<p>Выбирают важные имеющиеся предложения или отрывки из документа</p>
+<h2 id="abstractive-подходы">Abstractive подходы</h2>
+<p>Могут перефразировать документ, назвав важную информацию из него другими словами</p>
+<hr>
+<p>Модель SummaRuNNer реализует именно Extractive подход, основанный на рекуррентных нейросетях. А подход для ее обучения позволяет <em>extractive</em> модели быть натренированной на abstractive summaries</p>
+<h1 id="архитектура-модели">Архитектура модели</h1>
+<p>Данная модель решает проблему саммаризации следующим образом: решается проблема бинарной классификации для каждого предложения в документе (брать предложение в саммари или не брать), учитывая классификацию предсказанную моделью для предыдущих предложений от текущего.</p>
+<p>Для классификации последовательности в качестве основного &ldquo;строительного&rdquo; блока была взята модель <a href="https://review-him.github.io/posts/gru_model/" title="GRU">GRU</a>.
+Архитектура модели состоит из двух-слойной двунаправленной GRU-RNN, которая выглядит следующим образом:
+<img src="/images/summarunner_01.png" alt="Схема SummaRuNNer"></p>
+<h2 id="первый-слой">Первый слой</h2>
+<p>На первом слое идет работа с последовательностями слов. Сначала преобразовываются слова в эмбединги, а затем две RNN: одна обрабатывает последовательность из эмбедингов слева направо, другая - справа налево, получают скрытое представление о предложениях.</p>
+<h2 id="второй-слой">Второй слой</h2>
+<p>На втором слое модели идет обработка предложений. Происходит она следующим образом: векторы скрытых представлений слов после прохода слева направо конкатенируются с векторами скрытых представлений слов после прохода RNN обратно, а затем усредняются. Получившиеся средние векторы по предложениям снова подаются в двунаправленную RNN.
+Затем получившиеся векторы скрытого представления по каждому предложению конкатенируются с такими же векторами с двух направлений прохода нейросети и берется среднее между ними. Таким образом мы получаем представление документа.</p>
+<h2 id="собираем-все-вместе">Собираем все вместе</h2>
+<p>Полученное векторное представление документа, а также скрытые слои предложений затем используются для классификации каждого предложения. Учитывается смысл предложения, его позиция в документе, его смысл в документе, а также смысл других предложений до него. На основе всей этой информации принимается решение о том, брать ли предложение в саммари или не брать.</p>
+<h1 id="реализация-в-коде">Реализация в коде</h1>
+<p>Импорт необходимых модулей:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> random
+<span style="color:#f92672">import</span> math
+
+<span style="color:#f92672">import</span> torch
+random<span style="color:#f92672">.</span>seed(<span style="color:#ae81ff">34</span>)
+</code></pre></div><p>Прежде всего напомним, как выглядит архитектура: <img src="/images/summarunner_01.png" alt="Схема SummaRuNNer"></p>
+<p>Как видим, начать следует с обработки слов: их перевода в векторное представление с помощью эмбеддингов. Для этой игрушечной реализации, я подготовлю эмбединги с помощью обычного рандома. Далее со всеми другими параметрами я буду делать то же самое для упрощения.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Предположим, что у нас есть 3 предложения, каждое из которых</span>
+<span style="color:#75715e"># имеет по 3-4 слова</span>
+
+<span style="color:#75715e"># пусть наш эмбединг переводит слова в вектора размерности 3</span>
+embed_dim <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+
+Doc <span style="color:#f92672">=</span> []
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">3</span>):
+    random_words_num <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>)
+    Doc<span style="color:#f92672">.</span>append(torch<span style="color:#f92672">.</span>randn((random_words_num, embed_dim)))
+</code></pre></div><p>Взглянем снова на устройство нейросети и объявим два нижних слоя: для обработки последовательности слов в каждом предложении и для обработки векторных представлений предложений, полученных на предыдущем шаге. Оба слоя представляют собой двунаправленные рекуррентные нейросети GRU</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Слой для обработки слов</span>
+gru_w <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>GRU(embed_dim, <span style="color:#ae81ff">5</span>, bidirectional<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+
+<span style="color:#75715e"># Слой для обработки предложений</span>
+gru_s <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>GRU(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5</span>, bidirectional<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</code></pre></div><p>Обрабатываем предложения по словам и по предложениям:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># по словам</span>
+outputs_per_sent <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>zeros((len(Doc), <span style="color:#ae81ff">5</span><span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>))
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(Doc)):
+    outputs, _ <span style="color:#f92672">=</span> gru_w(Doc[i])
+    outputs_per_sent[i] <span style="color:#f92672">=</span> outputs<span style="color:#f92672">.</span>mean(axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+
+<span style="color:#75715e"># по предложениям</span>
+outputs_s, _ <span style="color:#f92672">=</span> gru_s(outputs_per_sent)
+</code></pre></div><p>После этого мы можем получить векторное представление документа, для этого объявим еще пару параметров:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">Wd <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10</span>))
+bd <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>ones((<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10</span>))
+
+<span style="color:#75715e"># Векторное представление документа:</span>
+d <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tanh(torch<span style="color:#f92672">.</span>matmul(Wd, outputs_s<span style="color:#f92672">.</span>mean(axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)) <span style="color:#f92672">+</span> bd)<span style="color:#f92672">.</span>squeeze(<span style="color:#ae81ff">0</span>)
+</code></pre></div><p>А теперь самая интересная часть, для которой понадобятся еще несколько параметров:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">Wc <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10</span>))
+Ws <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10</span>))
+Wr <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10</span>))
+Wap <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>))
+Wrp <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>))
+bp <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</code></pre></div><p>Посмотрим на формулу, ради которой производились все предыдущие вычисления:</p>
+<p>$P(y_j=1|h_j,s_j,d) = \sigma(W_c h_j \text{ # content } \newline$
+$+ h_j^T W_s d \text{ # salience } \newline$
+$- h_j^T W_r tanh(s_j) \text{ # novelty } \newline$
+$+ W_{ap} p_j^a \text{ # abs. pos. imp. } \newline$
+$+ W_{rp} p_j^r \text{ # rel. pos. imp. } \newline$
+$+ bp) \text{ # bias term }$</p>
+<p>Как видим, формула представляет функцию sigmoid&rsquo;ы, которая берется от многочлена, каждый одночлен которого вносит в формулу свой смысл.</p>
+<ul>
+<li>Content - отражает смысл предложения <em>j</em></li>
+<li>salience - важность предложения в документе</li>
+<li>novelty - избыточность предложения по отношению к предыдущим предложениям</li>
+<li>abs. pos. imp/real. pos.imp - абсолютное/относительное положение предложения в документе</li>
+</ul>
+<p>Из предыдущей формулы нам остался непонятен только параметр $s_j$:
+$$
+s_j = \sum_{i=1}^{j-1} h_i P(y_i=1|h_i,s_i,d)
+$$
+Теперь нам известны все части формулы, реализуем этот алгоритм в коде python:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">proba_of_y</span>(hj, sj, d, paj, prj):
+    content <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>matmul(Wc, hj)<span style="color:#f92672">.</span>squeeze(<span style="color:#ae81ff">0</span>)
+    salience <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>matmul(hj<span style="color:#f92672">.</span>T, torch<span style="color:#f92672">.</span>matmul(Ws, d))
+    novelty <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>matmul(hj<span style="color:#f92672">.</span>T, torch<span style="color:#f92672">.</span>matmul(Wr, torch<span style="color:#f92672">.</span>tanh(sj)))
+    abs_pos_imp <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>matmul(Wap, paj<span style="color:#f92672">.</span>view(<span style="color:#ae81ff">1</span>))<span style="color:#f92672">.</span>squeeze(<span style="color:#ae81ff">0</span>)
+    rel_pos_imp <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>matmul(Wrp, prj<span style="color:#f92672">.</span>view(<span style="color:#ae81ff">1</span>))<span style="color:#f92672">.</span>squeeze(<span style="color:#ae81ff">0</span>)
+    <span style="color:#66d9ef">return</span> torch<span style="color:#f92672">.</span>sigmoid(content <span style="color:#f92672">+</span> salience <span style="color:#f92672">-</span> novelty <span style="color:#f92672">+</span> abs_pos_imp <span style="color:#f92672">+</span> rel_pos_imp <span style="color:#f92672">+</span> bp)
+</code></pre></div><p>Для определения относительного положения предложения в документе введем количество делений документа:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">num_of_divs <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+</code></pre></div><p>Проходимся по каждому предложению и делаем предсказания:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">sj <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>zeros(outputs_s<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">1</span>))
+doc_part_size <span style="color:#f92672">=</span> math<span style="color:#f92672">.</span>ceil(len(outputs_s) <span style="color:#f92672">/</span> num_of_divs)
+<span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(len(outputs_s)):
+    hj <span style="color:#f92672">=</span> outputs_s[j]
+    paj <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tensor(j)<span style="color:#f92672">.</span>type(torch<span style="color:#f92672">.</span>float)
+    prj <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>tensor(j <span style="color:#f92672">//</span> doc_part_size)<span style="color:#f92672">.</span>type(torch<span style="color:#f92672">.</span>float)
+    j_pred <span style="color:#f92672">=</span> proba_of_y(hj, sj, d, paj, prj)
+    sj <span style="color:#f92672">+=</span> hj <span style="color:#f92672">*</span> j_pred
+</code></pre></div><p>Вот собственно и все. Таким образом SummaRuNNer и делает предсказания.
+Каждый предсказанный j_pred является вероятностью того, что предложение $j$ является частью саммари всего документа.</p>
+<h1 id="послесловие">Послесловие</h1>
+<p>Для этой статьи я остановлюсь на разборе архитектуры и ее работы. Вопрос ее обучения сводится к тому, как использовать абстрактные саммари для сравнения выбранных нейросетью предложений в качестве кандидатов на саммари. В статье предложено решение, а разбираться с этим в мои планы пока не входило.</p>
+<h1 id="источники">Источники:</h1>
+<blockquote>
+<p>Ссылка на оригинальную статью: <a href="https://arxiv.org/pdf/1611.04230.pdf">https://arxiv.org/pdf/1611.04230.pdf</a></p>
+</blockquote>
+
+
+</div>
+
+
+
+
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ 
+    tex2jax: {
+      inlineMath: [["$","$"],["\\(","\\)"]],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    }
+  })
+</script>
+
+
+			</div>
+
+			<aside class="lg:col-span-4 col-span-12">
+					<h3 class="text-lg mb-2 text-black font-medium "> Explore topics by </h3>
+					<ul class="text-cyan-900">
+						<li><a href="/categories/" class="hover:underline"> Categories </a></li>
+						<li><a href="/tags/" class="hover:underline"> Tags </a></li>
+					</ul>
+
+
+					
+					
+					<h3 class="text-lg mb-2 mt-3 text-black font-medium ">Featured Posts</h3>
+						<ul class="text-cyan-900">
+						
+					</ul>
+
+					
+
+					
+					
+
+					
+					
+					
+
+
+			</aside>
+
+</div>
+
+        
+
+		</div><div class="bg-slate-100 py-10 px-4 lg:px-8 mt-20">
+<p>Copyright (c) 2024 </p>
+</div></body>
+</html>
+
+
