@@ -139,12 +139,12 @@ Wap <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</spa
 Wrp <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn((<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>))
 bp <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
 </code></pre></div><p>Посмотрим на формулу, ради которой производились все предыдущие вычисления:</p>
-<p>$P(y_j=1|h_j,s_j,d) = \sigma(W_c h_j \text{ # content } \newline$
-$+ h_j^T W_s d \text{ # salience } \newline$
-$- h_j^T W_r tanh(s_j) \text{ # novelty } \newline$
-$+ W_{ap} p_j^a \text{ # abs. pos. imp. } \newline$
-$+ W_{rp} p_j^r \text{ # rel. pos. imp. } \newline$
-$+ bp) \text{ # bias term }$</p>
+<p>$P(y_j=1|h_j,s_j,d) = \sigma(W_c h_j \text{ -&gt; content } \newline$
+$+ h_j^T W_s d \text{ -&gt; salience } \newline$
+$- h_j^T W_r tanh(s_j) \text{ -&gt; novelty } \newline$
+$+ W_{ap} p_j^a \text{ -&gt; abs. pos. imp. } \newline$
+$+ W_{rp} p_j^r \text{ -&gt; rel. pos. imp. } \newline$
+$+ bp) \text{ -&gt; bias term }$</p>
 <p>Как видим, формула представляет функцию sigmoid&rsquo;ы, которая берется от многочлена, каждый одночлен которого вносит в формулу свой смысл.</p>
 <ul>
 <li>Content - отражает смысл предложения <em>j</em></li>
