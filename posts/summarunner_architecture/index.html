@@ -78,7 +78,7 @@
 <h2 id="abstractive-подходы">Abstractive подходы</h2>
 <p>Могут перефразировать документ, назвав важную информацию из него другими словами</p>
 <hr>
-<p>Модель SummaRuNNer реализует именно Extractive подход, основанный на рекуррентных нейросетях. А подход для ее обучения позволяет <em>extractive</em> модели быть натренированной на abstractive summaries</p>
+<p>Модель SummaRuNNer реализует именно Extractive подход, основанный на рекуррентных нейросетях. А подход для ее обучения позволяет <em>extractive</em> модели быть натренированной на abstractive summaries.</p>
 <h1 id="архитектура-модели">Архитектура модели</h1>
 <p>Данная модель решает проблему саммаризации следующим образом: решается проблема бинарной классификации для каждого предложения в документе (брать предложение в саммари или не брать), учитывая классификацию предсказанную моделью для предыдущих предложений от текущего.</p>
 <p>Для классификации последовательности в качестве основного &ldquo;строительного&rdquo; блока была взята модель <a href="https://review-him.github.io/posts/gru_model/" title="GRU">GRU</a>.
@@ -110,7 +110,7 @@ Doc <span style="color:#f92672">=</span> []
 <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">3</span>):
     random_words_num <span style="color:#f92672">=</span> random<span style="color:#f92672">.</span>randint(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>)
     Doc<span style="color:#f92672">.</span>append(torch<span style="color:#f92672">.</span>randn((random_words_num, embed_dim)))
-</code></pre></div><p>Взглянем снова на устройство нейросети и объявим два нижних слоя: для обработки последовательности слов в каждом предложении и для обработки векторных представлений предложений, полученных на предыдущем шаге. Оба слоя представляют собой двунаправленные рекуррентные нейросети GRU</p>
+</code></pre></div><p>Взглянем снова на устройство нейросети и объявим два нижних слоя: для обработки последовательности слов в каждом предложении и для обработки векторных представлений предложений, полученных на предыдущем шаге. Оба слоя представляют собой двунаправленные рекуррентные нейросети GRU:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Слой для обработки слов</span>
 gru_w <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>GRU(embed_dim, <span style="color:#ae81ff">5</span>, bidirectional<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
 
