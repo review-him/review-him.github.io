@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+<link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
+
+
+<title>Review Him Blog | Threshold moving</title>
+</head>
+<body>
+		 <div class="max-w-{1400px}">
+
+<div class="py-6 pl-4 lg:pl-8 mb-5">
+<a href="/" class="text-5xl block mb-6">Review Him Blog </a>
+<span class="text-xl">  </span>
+</div>
+
+<nav class="flex flex-row gap-8 pl-4 lg:pl-8">
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/"> Home</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/posts/"> Blog</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/about/"> About</a>
+                        
+                </div>
+                
+        
+</nav>
+<hr><div class="grid grid-cols-12 gap-8 mx-4 lg:mx-8 mt-10">
+			<div class="col-span-12 lg:col-span-8">
+
+
+<h1 class="text-2xl font-bold mb-2">Threshold moving</h1>
+
+
+<div class="flex flex-row gap-2 mb-2">
+
+<div>
+	<datetime class="text-zinc-500">2024-02-13</datetime></div>
+
+
+</div>
+
+<div class="single">
+
+<h1 id="зачем">Зачем?</h1>
+<p>Когда у нас примерно одинаковое количество примеров для разных классов, не возникает такой проблемы, как выбор трэшхолда, поскольку тут интуитивно понятно, что значение вероятности больше 0.5 означает позитивное предсказание, а меньше означает негативное.</p>
+<p>Но что делать, когда у нас есть перевес в данных в какую-либо сторону? Или цена ошибки в каком либо классе больше, чем в другом?
+Тогда и нужно решать задачу подбора трэшхолда.
+Для решения этой задачи существует не один подход, а в этой статье я рассмотрю лишь часть из них.</p>
+<h1 id="построение-roc-кривой">Построение ROC кривой</h1>
+<p>Для построения этой кривой нужно взять массив трэшхолдов, по ним посчитать предсказания. Для каждого трэшхолда подсчитать false-positive rate (FPR) и true-positive rate (TPR) и расположить эти точки на графике, где вдоль оси x идут значения FPR, а вдоль оси y значения TPR. Также необходимо построить диагональ из точки $[0,1]$ в точку $[1,0]$, которая будет обозначать предсказания одного самого распространенного класса.</p>
+<p>Как из этой кривой подобрать самый подходящий трэшхолд? Визуально это трэшхолд самой верхней левой точки на графике. Но как найти эту точку точно?
+Для этого понадобится получить значения TPR и FPR для каждого трэшхолда и посчитать геометрическое среднее между TPR и (1-FPR). Трэшхолд наибольшего среднего  значения и будет являться оптимальным.</p>
+<p>Есть еще один вариант, как можно найти оптимальный трэшхолд. Для этого нужно воспользоваться Youden&rsquo;s J statistic, методом, который напрямую создан для подбора оптимального трэшхолда. Его суть заключается в том, что необходимо из TPR вычесть FPR для каждого трэшхолда. В таком случае получится, что значение для наибольшего трэшхолда снова будет оптимальным.</p>
+<h2 id="как-это-выглядит-в-коде">Как это выглядит в коде?</h2>
+<p>Предположим у нас есть X, y.
+Находим предсказания, считаем tpr и fpr из библиотеки sklearn:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> roc_curve
+fpr, tpr, thresholds <span style="color:#f92672">=</span> roc_curve(y, yhat)
+</code></pre></div><p>Затем считаем геометрическое среднее, как говорилось раньше между tpr и (1-fpr):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">gmeans <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>sqrt(tpr <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span><span style="color:#f92672">-</span>fpr))
+</code></pre></div><p>Ищем наибольшее значение среднего и получаем оптимальный трэшхолд:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">opt_threshold <span style="color:#f92672">=</span> thresholds[np<span style="color:#f92672">.</span>argmax(gmeans)]
+</code></pre></div><p>Для подсчета статистики Юдена, все еще проще:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">opt_threshold <span style="color:#f92672">=</span> thresholds[np<span style="color:#f92672">.</span>argmax(tpr <span style="color:#f92672">-</span> fpr)]
+</code></pre></div><p>Вот и все.</p>
+<p>Визуально это выглядит так:
+<img src="/images/threshold_01.png" alt="График ROC кривой"></p>
+<p>Еще с помощью этой кривой можно описать качество предсказаний модели с помощью единственного числа - AUC. Сравнивая значения этого показателя для разных моделей, можно выбрать модель с наилучшим результатом.</p>
+<h1 id="precision-recall-curve">Precision-Recall Curve</h1>
+<p>В отличие от ROC кривой, которая показывает компромисс между TPR и FPR для разных трэшхолдов, precision-recall кривая сфокусирована на точности модели в предсказании только положительного класса (меньшего).</p>
+<p><em>Precision</em> - это отношение числа TP к сумме всех TP + FP. Это значение показывает, как хорошо модель предсказывает положительный класс.
+<em>Recall</em> - это отношение числа TP к сумме TP + FN. Показывает вероятность классификатора предсказать правильное положительное значение.</p>
+<p>Для того, чтобы построить кривую precision-recall на определенном сэте трэшхолдов, необходимо также предсказать вероятности для каждого трэшхолда, посчитать значения precision и recall и отобразить эти значения для каждого трэшхолда на оси координат, где по оси x располагаются значения recall, а по оси y - значения precision.</p>
+<p>Также на этом графике принято отображать горизонтальную линию, означающую отношение положительных примеров ко всем в датасете, или используют какое-то маленькое фиксированное число.</p>
+<p>Наилучшие значения модели получаются при выборе трэшхолда в максимально правой верхней точке, когда precision и recall максимальны.</p>
+<h1 id="как-использовать-в-коде">Как использовать в коде?</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> precision_recall_curve
+precision, recall, thresholds <span style="color:#f92672">=</span> precision_recall_curve(y, yhat)
+</code></pre></div><p>Теперь нужно определить оптимальный трэшхолд.
+Сделать это можно с помощью оптимизации F1-score функции, которая означает ни что иное, как гармоническое среднее между precision и recall. Считаем F1 для каждого трэшхолда и находим оптимальное значение трэшхолда там, где F1 достигает максимального значения.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">F <span style="color:#f92672">=</span> (<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> precision <span style="color:#f92672">*</span> recall) <span style="color:#f92672">/</span> (precision <span style="color:#f92672">+</span> recall)
+
+optim_threshold <span style="color:#f92672">=</span> thresholds[np<span style="color:#f92672">.</span>argmax(F)]
+</code></pre></div><p>Можно построить график того, как это выглядит:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">fscore <span style="color:#f92672">=</span> (<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> precision <span style="color:#f92672">*</span> recall) <span style="color:#f92672">/</span> (precision <span style="color:#f92672">+</span> recall)
+ix <span style="color:#f92672">=</span> argmax(fscore)
+print(<span style="color:#e6db74">&#39;Best Threshold=</span><span style="color:#e6db74">%f</span><span style="color:#e6db74">, F score=</span><span style="color:#e6db74">%.3f</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> (thresholds[ix], fscore[ix]))
+
+pyplot<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>], [<span style="color:#ae81ff">0.01</span>, <span style="color:#ae81ff">0.01</span>], linestyle<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;--&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;No Skill&#39;</span>)
+pyplot<span style="color:#f92672">.</span>plot(precision, recall, marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;.&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Logistic&#39;</span>)
+pyplot<span style="color:#f92672">.</span>scatter(precision[ix], recall[ix], marker<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;o&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;black&#39;</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Best&#39;</span>)
+
+pyplot<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Precision&#39;</span>)
+pyplot<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Recall&#39;</span>)
+pyplot<span style="color:#f92672">.</span>legend()
+
+pyplot<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="/images/threshold_02.png" alt="График Precision-Recall кривой"></p>
+<h1 id="источники">Источники:</h1>
+<blockquote>
+<p><a href="https://machinelearningmastery.com/threshold-moving-for-imbalanced-classification/">https://machinelearningmastery.com/threshold-moving-for-imbalanced-classification/</a></p>
+</blockquote>
+
+
+</div>
+
+
+
+
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ 
+    tex2jax: {
+      inlineMath: [["$","$"],["\\(","\\)"]],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    }
+  })
+</script>
+
+
+			</div>
+
+			<aside class="lg:col-span-4 col-span-12">
+					<h3 class="text-lg mb-2 text-black font-medium "> Explore topics by </h3>
+					<ul class="text-cyan-900">
+						<li><a href="/categories/" class="hover:underline"> Categories </a></li>
+						<li><a href="/tags/" class="hover:underline"> Tags </a></li>
+					</ul>
+
+
+					
+					
+					<h3 class="text-lg mb-2 mt-3 text-black font-medium ">Featured Posts</h3>
+						<ul class="text-cyan-900">
+						
+					</ul>
+
+					
+
+					
+					
+
+					
+					
+					
+
+
+			</aside>
+
+</div>
+
+        
+
+		</div><div class="bg-slate-100 py-10 px-4 lg:px-8 mt-20">
+<p>Copyright (c) 2024 </p>
+</div></body>
+</html>
+
+

@@ -6,7 +6,17 @@
     <description>Recent content in Posts on Review Him Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 02 Feb 2024 21:26:28 +0700</lastBuildDate><atom:link href="https://review-him.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 13 Feb 2024 14:56:14 +0700</lastBuildDate><atom:link href="https://review-him.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Threshold moving</title>
+      <link>https://review-him.github.io/posts/threshold_moving/</link>
+      <pubDate>Tue, 13 Feb 2024 14:56:14 +0700</pubDate>
+      
+      <guid>https://review-him.github.io/posts/threshold_moving/</guid>
+      <description>Зачем? Когда у нас примерно одинаковое количество примеров для разных классов, не возникает такой проблемы, как выбор трэшхолда, поскольку тут интуитивно понятно, что значение вероятности больше 0.5 означает позитивное предсказание, а меньше означает негативное.
+Но что делать, когда у нас есть перевес в данных в какую-либо сторону? Или цена ошибки в каком либо классе больше, чем в другом? Тогда и нужно решать задачу подбора трэшхолда. Для решения этой задачи существует не один подход, а в этой статье я рассмотрю лишь часть из них.</description>
+    </item>
+    
     <item>
       <title>Loss functions</title>
       <link>https://review-him.github.io/posts/loss_functions/</link>
