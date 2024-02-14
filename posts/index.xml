@@ -6,7 +6,17 @@
     <description>Recent content in Posts on Review Him Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 13 Feb 2024 14:56:14 +0700</lastBuildDate><atom:link href="https://review-him.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 14 Feb 2024 16:53:20 +0700</lastBuildDate><atom:link href="https://review-him.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Jensen&#39;s inequality</title>
+      <link>https://review-him.github.io/posts/jens_ineq/</link>
+      <pubDate>Wed, 14 Feb 2024 16:53:20 +0700</pubDate>
+      
+      <guid>https://review-him.github.io/posts/jens_ineq/</guid>
+      <description>Что это такое? Неравенство Дженсена или Jensen&amp;rsquo;s Inequality говорит о том, что если мы возьмем у выпуклой функции и соединим две точки отрезком, то значение любой точки функции под этим отрезком будет меньше или равно значению на этом отрезке.
+Математически это выглядит так, хотя это и трудно для понимания, лучше разбираться с этим визуально: $$ F(t x_1 + (1-t)x_2) \le t F(x_1) + (1 - t) F(x_2), t \in [0, 1] $$</description>
+    </item>
+    
     <item>
       <title>Threshold moving</title>
       <link>https://review-him.github.io/posts/threshold_moving/</link>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+<link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
+
+
+<title>Review Him Blog | Jensen&#39;s inequality</title>
+</head>
+<body>
+		 <div class="max-w-{1400px}">
+
+<div class="py-6 pl-4 lg:pl-8 mb-5">
+<a href="/" class="text-5xl block mb-6">Review Him Blog </a>
+<span class="text-xl">  </span>
+</div>
+
+<nav class="flex flex-row gap-8 pl-4 lg:pl-8">
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/"> Home</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/posts/"> Blog</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/about/"> About</a>
+                        
+                </div>
+                
+        
+</nav>
+<hr><div class="grid grid-cols-12 gap-8 mx-4 lg:mx-8 mt-10">
+			<div class="col-span-12 lg:col-span-8">
+
+
+<h1 class="text-2xl font-bold mb-2">Jensen&#39;s inequality</h1>
+
+
+<div class="flex flex-row gap-2 mb-2">
+
+<div>
+	<datetime class="text-zinc-500">2024-02-14</datetime></div>
+
+
+</div>
+
+<div class="single">
+
+<h1 id="что-это-такое">Что это такое?</h1>
+<p>Неравенство Дженсена или Jensen&rsquo;s Inequality говорит о том, что если мы возьмем у выпуклой функции и соединим две точки отрезком, то значение любой точки функции под этим отрезком будет меньше или равно значению на этом отрезке.</p>
+<p>Математически это выглядит так, хотя это и трудно для понимания, лучше разбираться с этим визуально:
+$$
+F(t x_1 + (1-t)x_2) \le t F(x_1) + (1 - t) F(x_2), t \in [0, 1]
+$$</p>
+<p>А вот визуальный график выпуклой функции, который более подробно все объяснит:
+<img src="/images/jen_ineq_01.png" alt="График для выпуклой функции">
+Первая часть неравенства говорит о том, что мы берем значение из промежутка от x1 до x2, где коэффициент t и (1-t) - это просто значения от 0 до 1, которые говорят, от какого значения какую часть нужно взять, что в итоге возвращает точку между x1 и x2. Так вот значение функции в этой точке будет меньше или равно правой части.</p>
+<p>А правая часть неравенства говорит о том, что значение на отрезке, соединяющее два значения в точках x1 и x2 больше или равно левой части неравенства.</p>
+<p>По сути смысл неравенства в том, что все значения на отрезке соединяющим две точки выпуклой функции больше или равны всем значениям, которые находятся под этим отрезком.</p>
+<h1 id="как-это-использовать">Как это использовать?</h1>
+<p>Начать следует с обобщение этого неравенства.
+А выглядит оно так: Значение функции от линейной комбинации параметров меньше или равно линейной комбинации значений функции от этих параметров.</p>
+<p>Линейная комбинация значений деленная на n этих значений сама по себе является формулой среднего, а значит ее можно использовать в этом неравенстве.
+Тогда правдиво и неравенство, что Выпуклая функция от среднего значения меньше или равна среднему значению Выпуклой функции.</p>
+<h1 id="источники">Источники</h1>
+<blockquote>
+<p><a href="https://www.youtube.com/watch?v=LOwj7UxQwJ0">https://www.youtube.com/watch?v=LOwj7UxQwJ0</a></p>
+</blockquote>
+
+
+</div>
+
+
+
+
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ 
+    tex2jax: {
+      inlineMath: [["$","$"],["\\(","\\)"]],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    }
+  })
+</script>
+
+
+			</div>
+
+			<aside class="lg:col-span-4 col-span-12">
+					<h3 class="text-lg mb-2 text-black font-medium "> Explore topics by </h3>
+					<ul class="text-cyan-900">
+						<li><a href="/categories/" class="hover:underline"> Categories </a></li>
+						<li><a href="/tags/" class="hover:underline"> Tags </a></li>
+					</ul>
+
+
+					
+					
+					<h3 class="text-lg mb-2 mt-3 text-black font-medium ">Featured Posts</h3>
+						<ul class="text-cyan-900">
+						
+					</ul>
+
+					
+
+					
+					
+
+					
+					
+					
+
+
+			</aside>
+
+</div>
+
+        
+
+		</div><div class="bg-slate-100 py-10 px-4 lg:px-8 mt-20">
+<p>Copyright (c) 2024 </p>
+</div></body>
+</html>
+
+
