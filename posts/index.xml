@@ -6,7 +6,18 @@
     <description>Recent content in Posts on Review Him Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 14 Feb 2024 16:53:20 +0700</lastBuildDate><atom:link href="https://review-him.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 15 Feb 2024 21:43:42 +0700</lastBuildDate><atom:link href="https://review-him.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pythagorean means</title>
+      <link>https://review-him.github.io/posts/pythagorean_means/</link>
+      <pubDate>Thu, 15 Feb 2024 21:43:42 +0700</pubDate>
+      
+      <guid>https://review-him.github.io/posts/pythagorean_means/</guid>
+      <description>Что это такое? Пифагорейское среднее включает в себя арифметическое среднее (AM), геометрическое среднее (GM) и гармоническое среднее (HM).
+Формулы $$ AM(x_1, &amp;hellip;, x_n) = \frac{x_1 + &amp;hellip; + x_n}{n} $$ $$ GM(x_1,&amp;hellip;,x_n) = \sqrt[n]{|x_1 \times &amp;hellip;\times x_n|} $$ $$ HM(x_1, &amp;hellip;, x_n) = \frac{n}{\frac{1}{x_1} + &amp;hellip; + \frac{1}{x_n}} $$
+Где и что используется?  Арифметическое среднее - обычно используется, когда речь идет о количестве каких-нибудь объектов, о чем-то что можно измерить, очков и тд.</description>
+    </item>
+    
     <item>
       <title>Jensen&#39;s inequality</title>
       <link>https://review-him.github.io/posts/jens_ineq/</link>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+<link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
+
+
+<title>Review Him Blog | Pythagorean means</title>
+</head>
+<body>
+		 <div class="max-w-{1400px}">
+
+<div class="py-6 pl-4 lg:pl-8 mb-5">
+<a href="/" class="text-5xl block mb-6">Review Him Blog </a>
+<span class="text-xl">  </span>
+</div>
+
+<nav class="flex flex-row gap-8 pl-4 lg:pl-8">
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/"> Home</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/posts/"> Blog</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/about/"> About</a>
+                        
+                </div>
+                
+        
+</nav>
+<hr><div class="grid grid-cols-12 gap-8 mx-4 lg:mx-8 mt-10">
+			<div class="col-span-12 lg:col-span-8">
+
+
+<h1 class="text-2xl font-bold mb-2">Pythagorean means</h1>
+
+
+<div class="flex flex-row gap-2 mb-2">
+
+<div>
+	<datetime class="text-zinc-500">2024-02-15</datetime></div>
+
+
+</div>
+
+<div class="single">
+
+<h1 id="что-это-такое">Что это такое?</h1>
+<p>Пифагорейское среднее включает в себя арифметическое среднее (AM), геометрическое среднее (GM) и гармоническое среднее (HM).</p>
+<h1 id="формулы">Формулы</h1>
+<p>$$
+AM(x_1, &hellip;, x_n) = \frac{x_1 + &hellip; + x_n}{n}
+$$
+$$
+GM(x_1,&hellip;,x_n) = \sqrt[n]{|x_1 \times &hellip;\times x_n|}
+$$
+$$
+HM(x_1, &hellip;, x_n) = \frac{n}{\frac{1}{x_1} + &hellip; + \frac{1}{x_n}}
+$$</p>
+<h1 id="где-и-что-используется">Где и что используется?</h1>
+<ul>
+<li>Арифметическое среднее - обычно используется, когда речь идет о количестве каких-нибудь объектов, о чем-то что можно измерить, очков и тд.</li>
+<li>Геометрическое среднее - используется, когда сет чисел растет по геометрическим законам. Например, когда акции компании за один период выросли на 1%, а на следующий период выросли еще на один процент, во второй раз величина этого одного процента будет больше, потому что число на которое оно выросло будет больше.</li>
+<li>Гармоническое среднее - самое непонятное из этих средних. Поэтому я с ним разберусь отдельно ниже.</li>
+</ul>
+<h2 id="как-работает-гармоническое-среднее">Как работает гармоническое среднее?</h2>
+<p>Как мы видим из формулы, гармоническое среднее - это среднее, в котором вес наблюдения обратно пропорционален его величине.
+Это значит, что, когда мы суммируем основной знаменатель, нам приходится приводить его к общему знаменателю, а значит учитывается какую лепту вносит каждый элемент в эту сумму. Ну а затем по логике деления числителя на дробь, знаменатель дроби в знаменателе переходит в числитель, который делится на сумму всех этих лепт, внесенных пропорционально каждым слагаемым.</p>
+<p>Такую среднюю применяют, когда нужно сохранить исходный результат. Отличный пример задачи, где следует использовать гармоническое среднее - это задача про машину, которая едет один участок пути с одной скоростью, а затем с другой. А нам надо найти скорость, с которой бы другая машина проехала тот же участок дороги за то же время. арифметическим средним такую задачу уже не решить.</p>
+<h1 id="как-относятся-друг-к-другу-эти-средние">Как относятся друг к другу эти средние?</h1>
+<h2 id="am-vs-gm-inequality">AM vs GM inequality</h2>
+<p>Для того, чтобы ответить на вопрос, как относятся Арифметическое среднее к геометрическому среднему, можно воспользоваться [[Jensen&rsquo;s Inequality|Неравенством Дженсона]].
+Для этого возьмем выпуклую функцию - логарифм. Получается, что логарифм арифметического среднего больше или равен среднему логарифмов каждого элемента.
+Так это записывается математически:
+$$
+-log(\frac{1}{N} \sum_i{x_i}) \le -\frac{1}{N} \sum_i {log(x_i)}
+$$
+Далее умножим на -1 обе части для красоты, и сделаем преобразования. Внесем для правой части значение 1/N под логарифм, а также воспользуемся свойством, что сумма логарифмов, равна произведению параметров логарифма
+$$
+\begin{split}
+log(\frac{1}{N} \sum_i{x_i}) &amp;\ge \frac{1}{N} \sum_i {log(x_i)} \newline
+log(\frac{1}{N} \sum_i{x_i}) &amp;\ge {log(\prod_i x_i^{1/N})} \newline
+\end{split}
+$$
+Теперь если мы посмотрим на аргументы логарифмов в неравенстве, то заметим, что аргумент логарифма слева больше или равен аргументу логарифма справа.
+Покажем это формулой:
+$$
+\begin{split}
+\frac{1}{N} \sum_i{x_i} &amp;\ge \prod_i x_i^{1/N} \newline
+\frac{1}{N} \sum_i{x_i} &amp;\ge \sqrt[N]{x_1 * x_2 &hellip; * x_i} \newline
+\end{split}
+$$
+Полученное неравенство как раз и означает отношение среднего арифметического и среднего геометрического. То есть AM больше или равно GM</p>
+<h2 id="gm-vs-hm">GM vs HM</h2>
+<p>Здесь предлагаю рассмотреть предыдущее неравенство, только вместо $x_i$, возьмем обратные ему значения - $\frac{1}{x_i}$:
+$$
+\frac{1}{N} \sum_i{\frac{1}{x_i}} \ge \sqrt[N]{\frac{1}{x_1} * \frac{1}{x_2} &hellip; * \frac{1}{x_i}}
+$$</p>
+<p>Затем воспользуемся трюком и обратим обе стороны неравенства в обратные числа. В математике на английском эти числа называются reciprocals - <a href="https://en.wikipedia.org/wiki/Multiplicative_inverse">Обратные числа</a>
+Суть в том, что при обращении обеих частей получается следующая формула:
+$$
+\frac{N}{\sum_i \frac{1}{x_i}} \le \sqrt[N]{x_1 * x_2 &hellip; * x_i}
+$$</p>
+<p>И если присмотреться, то как раз и окажется, что левая часть это формула гармонического среднего, а правая это формула геометрического среднего.
+Получается, что гармоническое среднее меньше, чем геометрическое.</p>
+<p>$$
+HM \le GM \le AM
+$$</p>
+<h1 id="как-изменяются-все-эти-средние">Как изменяются все эти средние</h1>
+<h2 id="am">AM</h2>
+<p>Чтобы посмотреть на то, как изменяются функции, посчитаем производную функции от x:
+$$
+\frac{\delta AM}{\delta x_i} = (\frac{1}{N} * \sum x_i)' = \frac{1}{N}
+$$
+Выходит, что независимо от того, как изменяется какое либо значение x, значение функции монотонно растет на константу 1/N</p>
+<p>Для дата саенса AM менее интересно, поскольку его значение на самом деле никак не зависит от самих значений x.
+А теперь рассмотрим остальные средние.</p>
+<h2 id="gm">GM</h2>
+<p>$$
+\begin{split}
+\frac{\delta GM}{\delta x_i} &amp;= (\sqrt[N]{x_1 * x_2 &hellip; * x_i})' = \newline
+&amp;= \frac{1}{N} x_i^{\frac{1-N}{N}} * \sqrt[N]{x_1 * x_2 &hellip; x_{i-1}} = \newline
+&amp;= \frac{1}{N} x_i^{\frac{1}{N}} * x_i^{-1} * \sqrt[N]{x_1 * x_2 &hellip; x_{i-1}} = \newline
+&amp;= \frac{1}{N} \frac{GM}{x_i}
+\end{split}
+$$
+Путем несложных преобразований, выходит, что функция геометрического среднего растет в соответствии со значениями, которые она принимает, поскольку в числители стоит само значение геометрического среднего, а также функция изменяется настолько быстро, насколько много она принимает значений и насколько рассматриваемое значение большое, поскольку в знаменателе стоит $x_i$, а также применяется коэффициент 1/N. Можно сказать, что GM имеет своего рода регуляризацию, поскольку если значение x_i будет намного больше остальных, то значение функции изменится не так сильно.</p>
+<h2 id="hm">HM</h2>
+<p>Здесь будут преобразования посложнее, но тоже подъемно для маркдауна, поэтому вот:
+$$
+\begin{split}
+\frac{\delta HM}{\delta x_i} &amp;= (N\frac{1}{\sum {\frac{1}{x_i}}})' = \newline
+&amp;= N * (\frac{1}{\sum {\frac{1}{x_i}}})' = \newline
+&amp;= - N * \frac{1}{(\sum {\frac{1}{x_i}})^2} * (\frac{1}{x_i})' = \newline
+&amp;= - N * \frac{1}{(\sum {\frac{1}{x_i}})^2} * -\frac{1}{x_i^2} \newline
+&amp;= N * HM^2 * \frac{1}{x_i^2} \newline
+&amp;= N * \left(\frac{HM}{x_i}\right)^2 \newline
+\end{split}
+$$
+Как мы видим, функция гармонического среднего изменяется в квадрате, в отличие от функции геометрического среднего. То же касается и регуляризации, поскольку значение знаменателя также возводится в квадрат</p>
+<h1 id="источники">Источники</h1>
+<blockquote>
+<p><a href="https://www.youtube.com/watch?v=dN3UWN-aNOU">https://www.youtube.com/watch?v=dN3UWN-aNOU</a></p>
+<p><a href="https://www.grandars.ru/student/statistika/srednyaya-garmonicheskaya.html">https://www.grandars.ru/student/statistika/srednyaya-garmonicheskaya.html</a></p>
+<p><a href="https://waksoft.susu.ru/2015/09/26/5-variantov-srednego-ili-kakaya-srednyaya-temperatura-v-bolnitse/">https://waksoft.susu.ru/2015/09/26/5-variantov-srednego-ili-kakaya-srednyaya-temperatura-v-bolnitse/</a></p>
+</blockquote>
+
+
+</div>
+
+
+
+
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ 
+    tex2jax: {
+      inlineMath: [["$","$"],["\\(","\\)"]],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    }
+  })
+</script>
+
+
+			</div>
+
+			<aside class="lg:col-span-4 col-span-12">
+					<h3 class="text-lg mb-2 text-black font-medium "> Explore topics by </h3>
+					<ul class="text-cyan-900">
+						<li><a href="/categories/" class="hover:underline"> Categories </a></li>
+						<li><a href="/tags/" class="hover:underline"> Tags </a></li>
+					</ul>
+
+
+					
+					
+					<h3 class="text-lg mb-2 mt-3 text-black font-medium ">Featured Posts</h3>
+						<ul class="text-cyan-900">
+						
+					</ul>
+
+					
+
+					
+					
+
+					
+					
+					
+
+
+			</aside>
+
+</div>
+
+        
+
+		</div><div class="bg-slate-100 py-10 px-4 lg:px-8 mt-20">
+<p>Copyright (c) 2024 </p>
+</div></body>
+</html>
+
+
