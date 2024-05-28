@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+<link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
+
+
+<title>Review Him Blog | Precision, Recall и в чем их разница</title>
+</head>
+<body>
+		 <div class="max-w-{1400px}">
+
+<div class="py-6 pl-4 lg:pl-8 mb-5">
+<a href="/" class="text-5xl block mb-6">Review Him Blog </a>
+<span class="text-xl">  </span>
+</div>
+
+<nav class="flex flex-row gap-8 pl-4 lg:pl-8">
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/"> Home</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/posts/"> Blog</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/about/"> About</a>
+                        
+                </div>
+                
+        
+</nav>
+<hr><div class="grid grid-cols-12 gap-8 mx-4 lg:mx-8 mt-10">
+			<div class="col-span-12 lg:col-span-8">
+
+
+<h1 class="text-2xl font-bold mb-2">Precision, Recall и в чем их разница</h1>
+
+
+<div class="flex flex-row gap-2 mb-2">
+
+<div>
+	<datetime class="text-zinc-500">2024-05-28</datetime></div>
+
+
+</div>
+
+<div class="single">
+
+<h1 id="что-такое-precision-и-recall">Что такое Precision и Recall?</h1>
+<p>Оба два - это метрики классификации, которые показывают, насколько хорошо модель предсказывает классы.</p>
+<h1 id="что-такое-precision">Что такое Precision</h1>
+<p>Предположим у нас есть два класса: X и O. И предположим на плоскости они расположены следующим образом:
+<img src="/images/precision_recall_01.png" alt="Значения на графике">
+Затем мы обучили модель предсказывать эти два класса и она разделила их фиолетовой чертой как на картинке ниже. По ее мнению справа находятся X&rsquo;ы, а слева - O&rsquo;и.
+<img src="/images/precision_recall_02.png" alt="Разделение значений на графике">
+Теперь нас интересует, как мы можем оценить Precision для класса X.
+Формула Precision&rsquo;a для оценки качества предсказаний модели по классу X будет следующей:
+$$
+Precision = \frac{\text{Количество правильно предсказанных X}}{\text{Количество всех предсказанных как X}}
+$$
+В нашем случае Precision = 4/6 = $\frac{2}{3}$
+Интересно тут то, что в этой формуле мы не берем во внимание предсказанное как класс O:
+<img src="/images/precision_recall_03.png" alt="Интересное в формуле precision"></p>
+<h1 id="что-такое-recall">Что такое Recall</h1>
+<p>Обратимся к примеру, который мы рассмотрели выше.
+<img src="/images/precision_recall_02.png" alt="Разделение значений на графике">
+В этом случае значение Recall для класса X будет считаться следующим образом:
+$$
+Recall = \frac{\text{Все значения X которые мы предсказали как X}}{\text{Вообще все значения X}}
+$$
+Recall = 4/6 = $\frac{2}{3}$. В нашем примере получается то же значение.
+Здесь интересно то, что для подсчета этой метрики мы игнорируем все значения с классом O:
+<img src="/images/precision_recall_04.png" alt="Интересное в формуле recall"></p>
+<h1 id="зачем-их-считать-если-можно-посчитать-accuracy">Зачем их считать, если можно посчитать Accuracy?</h1>
+<p>В данном случае, возможно посчитать Accuracy было бы достаточно. Accuracy = 7/11 ~= 0.64
+Но метрики Precision и Recall показывают себя хорошо в случае, когда имеется дисбаланс классов. И с помощью этих двух метрик мы сможем сконцентрировать внимание именно на желаемом классе.</p>
+<h1 id="источники">Источники</h1>
+<blockquote>
+<p><a href="https://www.youtube.com/watch?v=qWfzIYCvBqo">https://www.youtube.com/watch?v=qWfzIYCvBqo</a></p>
+</blockquote>
+
+
+</div>
+
+
+
+
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ 
+    tex2jax: {
+      inlineMath: [["$","$"],["\\(","\\)"]],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    }
+  })
+</script>
+
+
+			</div>
+
+			<aside class="lg:col-span-4 col-span-12">
+					<h3 class="text-lg mb-2 text-black font-medium "> Explore topics by </h3>
+					<ul class="text-cyan-900">
+						<li><a href="/categories/" class="hover:underline"> Categories </a></li>
+						<li><a href="/tags/" class="hover:underline"> Tags </a></li>
+					</ul>
+
+
+					
+					
+					<h3 class="text-lg mb-2 mt-3 text-black font-medium ">Featured Posts</h3>
+						<ul class="text-cyan-900">
+						
+					</ul>
+
+					
+
+					
+					
+
+					
+					
+					
+
+
+			</aside>
+
+</div>
+
+        
+
+		</div><div class="bg-slate-100 py-10 px-4 lg:px-8 mt-20">
+<p>Copyright (c) 2024 </p>
+</div></body>
+</html>
+
+

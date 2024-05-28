@@ -6,7 +6,17 @@
     <description>Recent content on Review Him Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 15 Feb 2024 21:43:42 +0700</lastBuildDate><atom:link href="https://review-him.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 28 May 2024 21:22:20 +0700</lastBuildDate><atom:link href="https://review-him.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Precision, Recall и в чем их разница</title>
+      <link>https://review-him.github.io/posts/precision_recall/</link>
+      <pubDate>Tue, 28 May 2024 21:22:20 +0700</pubDate>
+      
+      <guid>https://review-him.github.io/posts/precision_recall/</guid>
+      <description>Что такое Precision и Recall? Оба два - это метрики классификации, которые показывают, насколько хорошо модель предсказывает классы.
+Что такое Precision Предположим у нас есть два класса: X и O. И предположим на плоскости они расположены следующим образом: Затем мы обучили модель предсказывать эти два класса и она разделила их фиолетовой чертой как на картинке ниже. По ее мнению справа находятся X&amp;rsquo;ы, а слева - O&amp;rsquo;и. Теперь нас интересует, как мы можем оценить Precision для класса X.</description>
+    </item>
+    
     <item>
       <title>Pythagorean means</title>
       <link>https://review-him.github.io/posts/pythagorean_means/</link>
