@@ -6,7 +6,17 @@
     <description>Recent content on Review Him Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 28 May 2024 21:22:20 +0700</lastBuildDate><atom:link href="https://review-him.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 12 Jun 2024 14:56:14 +0700</lastBuildDate><atom:link href="https://review-him.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Text tokenization</title>
+      <link>https://review-him.github.io/posts/text_tokenization/</link>
+      <pubDate>Wed, 12 Jun 2024 14:56:14 +0700</pubDate>
+      
+      <guid>https://review-him.github.io/posts/text_tokenization/</guid>
+      <description>Что такое токенизация Пропущу часть, где объясняется зачем это делать, потому что причины скорее всего и так понятны. Токенизация текста - это процесс разбиения документа на предложения, а предложения на отдельные слова, числа, знаки и прочее. И тут напрашивается вопрос как это сделать? Разбивать текст на пробелы не всегда хороший вариант из возможных. Лучше делить текст на токены, где токены&amp;hellip;
+Что такое токен &amp;hellip; это наименьшая логическая часть предложения, которая сама по себе несет какой-то смысл (поэтому и логическая).</description>
+    </item>
+    
     <item>
       <title>Precision, Recall и в чем их разница</title>
       <link>https://review-him.github.io/posts/precision_recall/</link>

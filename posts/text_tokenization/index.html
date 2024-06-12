@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8"/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+<link href="/css/style.css" rel="stylesheet" type="text/css" media="all">
+
+
+<title>Review Him Blog | Text tokenization</title>
+</head>
+<body>
+		 <div class="max-w-{1400px}">
+
+<div class="py-6 pl-4 lg:pl-8 mb-5">
+<a href="/" class="text-5xl block mb-6">Review Him Blog </a>
+<span class="text-xl">  </span>
+</div>
+
+<nav class="flex flex-row gap-8 pl-4 lg:pl-8">
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/"> Home</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/posts/"> Blog</a>
+                        
+                </div>
+                
+        
+
+                
+
+                
+                <div class="pb-3 border-b-white border-b-4 text-lg hover:border-b-red-700">
+
+                                <a  href="/about/"> About</a>
+                        
+                </div>
+                
+        
+</nav>
+<hr><div class="grid grid-cols-12 gap-8 mx-4 lg:mx-8 mt-10">
+			<div class="col-span-12 lg:col-span-8">
+
+
+<h1 class="text-2xl font-bold mb-2">Text tokenization</h1>
+
+
+<div class="flex flex-row gap-2 mb-2">
+
+<div>
+	<datetime class="text-zinc-500">2024-06-12</datetime></div>
+
+
+</div>
+
+<div class="single">
+
+<h1 id="что-такое-токенизация">Что такое токенизация</h1>
+<p>Пропущу часть, где объясняется зачем это делать, потому что причины скорее всего и так понятны.
+Токенизация текста - это процесс разбиения документа на предложения, а предложения на отдельные слова, числа, знаки и прочее.
+И тут напрашивается вопрос как это сделать? Разбивать текст на пробелы не всегда хороший вариант из возможных. Лучше делить текст на токены, где токены&hellip;</p>
+<h2 id="что-такое-токен">Что такое токен</h2>
+<p>&hellip; это наименьшая логическая часть предложения, которая сама по себе несет какой-то смысл (поэтому и логическая).</p>
+<h1 id="как-это-сделать">Как это сделать</h1>
+<p>Делать это надо исходя из задачи.</p>
+<h2 id="токенизация-для-llm-с-помощью-bpe">Токенизация для LLM с помощью BPE</h2>
+<p>Например, когда мы используем LLM, нам важно, чтобы каждый кусочек информации, подаваемый на вход, привносил какой-то смысл в результат предсказания, поэтому в таком случае токенизация может происходить посимвольно, по несколько символов. Так например можно использовать Byte pair encoding, для кодирования посимвольно, по группам символов и даже по самым частым словам. Тем самым на вход модели подается сжатая версия текста, со всеми вытекающими последствиями (меньше информации обрабатывать, какие-то объедененные части текста изучаются моделью как шаблонны с определенным смыслом)</p>
+<p>В коде это можно использовать готовое решение - уже обученный токенизатор для ChatGPT из библиотеки tiktoken:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#960050;background-color:#1e0010">!</span>pip install tiktoken
+
+<span style="color:#f92672">import</span> tiktoken
+
+enc <span style="color:#f92672">=</span> tiktoken<span style="color:#f92672">.</span>get_encoding(<span style="color:#e6db74">&#34;o200k_base&#34;</span>)
+<span style="color:#66d9ef">assert</span> enc<span style="color:#f92672">.</span>decode(enc<span style="color:#f92672">.</span>encode(<span style="color:#e6db74">&#34;hello world&#34;</span>)) <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;hello world&#34;</span>
+
+<span style="color:#75715e"># To get the tokeniser corresponding to a specific model in the OpenAI API:</span>
+enc <span style="color:#f92672">=</span> tiktoken<span style="color:#f92672">.</span>encoding_for_model(<span style="color:#e6db74">&#34;gpt-4o&#34;</span>)
+</code></pre></div><p>Ссылка на исходный код библиотеки:
+<a href="https://github.com/openai/tiktoken/tree/main">https://github.com/openai/tiktoken/tree/main</a></p>
+<h2 id="токенизация-для-задач-попроще">Токенизация для задач попроще</h2>
+<p>Когда мы пытаемся решить задачу попроще, нам может быть достаточно классической обработки текста: удаление спец символов и стоп-слов, деление слов с помощью пробелов и приведение их в нормализованный вид (с помощью лемматизации или стемминга). Для этого можно воспользоваться специальными библиотеками и регулярными выражениями.</p>
+<p>Я нашел обзорную статью что для чего используется, поэтому может быть интересно почитать про различные библиотеки для разных задач. Там также приводятся примеры использования и описываются преимущества и недостатки различных методов:
+<a href="https://thepythoncode.com/article/tokenization-stemming-and-lemmatization-in-python#tokenization-by-splitting-the-sentence-by-whitespaces">https://thepythoncode.com/article/tokenization-stemming-and-lemmatization-in-python#tokenization-by-splitting-the-sentence-by-whitespaces</a></p>
+<h1 id="источники">Источники</h1>
+<blockquote>
+<p><a href="https://www.youtube.com/watch?v=LZFriJ85BfM">https://www.youtube.com/watch?v=LZFriJ85BfM</a></p>
+</blockquote>
+
+
+</div>
+
+
+
+
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ 
+    tex2jax: {
+      inlineMath: [["$","$"],["\\(","\\)"]],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+    }
+  })
+</script>
+
+
+			</div>
+
+			<aside class="lg:col-span-4 col-span-12">
+					<h3 class="text-lg mb-2 text-black font-medium "> Explore topics by </h3>
+					<ul class="text-cyan-900">
+						<li><a href="/categories/" class="hover:underline"> Categories </a></li>
+						<li><a href="/tags/" class="hover:underline"> Tags </a></li>
+					</ul>
+
+
+					
+					
+					<h3 class="text-lg mb-2 mt-3 text-black font-medium ">Featured Posts</h3>
+						<ul class="text-cyan-900">
+						
+					</ul>
+
+					
+
+					
+					
+
+					
+					
+					
+
+
+			</aside>
+
+</div>
+
+        
+
+		</div><div class="bg-slate-100 py-10 px-4 lg:px-8 mt-20">
+<p>Copyright (c) 2024 </p>
+</div></body>
+</html>
+
+
